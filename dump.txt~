@@ -1,0 +1,216 @@
+var app = require('express')();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+
+var gpio = require('rpi-gpio')
+var gpiop = gpio.promise;
+
+app.get('/', function(req, res){
+  res.sendFile(__dirname + '/index.html');
+});
+
+
+
+var pin1 = gpio.export(33, {ready: fn});
+pin1.set()
+var pin2 = gpio.export(35, {ready: fn});
+pin2.set()
+
+
+
+const motorAE = 37;
+const motorAA = 33;
+const motorAB = 35;
+
+const motorBE = 22;
+const motorBA = 16;
+const motorBB = 18;
+
+gpiop.setup(motorAE, gpio.DIR_OUT)
+ .then(() => {
+     return gpiop.write(motorAE, true)
+ }).catch((err) => {
+     console.log('Error: ', err.toString())
+ })
+ 
+ gpiop.setup(motorBE, gpio.DIR_OUT)
+ .then(() => {
+     return gpiop.write(motorBE, true)
+ }).catch((err) => {
+     console.log('Error: ', err.toString())
+ })
+ 
+state = "";
+io.on('connection', function(socket){
+  socket.on('message', function(data){
+  	console.log(data);
+  	socket.broadcast.emit('message', data);
+  	if(state != data.message) {
+  		move(data.message)
+  		state = data.message;
+  	}
+  	
+  	console.log(data.message);
+  	
+  });
+});
+	
+	
+
+http.listen(3000, function(){
+  console.log('listening on *:3000');
+});
+
+function move(direction) {
+
+  	
+  	if(direction == 'STOP') {
+	  	gpiop.setup(motorAA, gpio.DIR_OUT)
+			    .then(() => {
+			        return gpiop.write(motorAA, false)
+			    }).catch((err) => {
+	        console.log('Error: ', err.toString())
+	    })
+			gpiop.setup(motorAB, gpio.DIR_OUT)
+			    .then(() => {
+			        return gpiop.write(motorAB, false)
+			    }).catch((err) => {
+	        console.log('Error: ', err.toString())
+	    })
+	    
+	    gpiop.setup(motorBA, gpio.DIR_OUT)
+			    .then(() => {
+			        return gpiop.write(motorBA, false)
+			    }).catch((err) => {
+	        console.log('Error: ', err.toString())
+	    })
+			gpiop.setup(motorBB, gpio.DIR_OUT)
+			    .then(() => {
+			        return gpiop.write(motorBB, false)
+			    }).catch((err) => {
+	        console.log('Error: ', err.toString())
+	    })
+  	}
+  	
+	if(direction == 'UP') { // move forward
+		  	
+		gpiop.setup(motorAA, gpio.DIR_OUT)
+		    .then(() => {
+		        return gpiop.write(motorAA, true)
+		    }).catch((err) => {
+		  console.log('Error: ', err.toString())
+		 })
+		gpiop.setup(motorAB, gpio.DIR_OUT)
+		    .then(() => {
+		        return gpiop.write(motorAB, false)
+		    }).catch((err) => {
+		  console.log('Error: ', err.toString())
+		 })
+		 
+		 
+	    gpiop.setup(motorBA, gpio.DIR_OUT)
+			    .then(() => {
+			        return gpiop.write(motorBA, true)
+			    }).catch((err) => {
+	        console.log('Error: ', err.toString())
+	    })
+			gpiop.setup(motorBB, gpio.DIR_OUT)
+			    .then(() => {
+			        return gpiop.write(motorBB, false)
+			    }).catch((err) => {
+	        console.log('Error: ', err.toString())
+	    })
+  	}
+  	
+  	if(direction == 'LEFT') { // turn left
+  	
+  	  	gpiop.setup(motorBA, gpio.DIR_OUT)
+			    .then(() => {
+			        return gpiop.write(motorBA, true)
+			    }).catch((err) => {
+	        console.log('Error: ', err.toString())
+	    })
+			gpiop.setup(motorBB, gpio.DIR_OUT)
+			    .then(() => {
+			        return gpiop.write(motorBB, false)
+			    }).catch((err) => {
+	        console.log('Error: ', err.toString())
+	    })
+	    
+		gpiop.setup(motorAA, gpio.DIR_OUT)
+			    .then(() => {
+			        return gpiop.write(motorAA, false)
+			    }).catch((err) => {
+		     console.log('Error: ', err.toString())
+		 })
+		gpiop.setup(motorAB, gpio.DIR_OUT)
+			    .then(() => {
+			        return gpiop.write(motorAB, false)
+			    }).catch((err) => {
+		     console.log('Error: ', err.toString())
+		 })  
+		  	
+  	}
+  	
+  	if(direction == 'RIGHT') { // turn right
+  	
+  		gpiop.setup(motorBA, gpio.DIR_OUT)
+			    .then(() => {
+			        return gpiop.write(motorBA, false)
+			    }).catch((err) => {
+	        console.log('Error: ', err.toString())
+	    })
+			gpiop.setup(motorBB, gpio.DIR_OUT)
+			    .then(() => {
+			        return gpiop.write(motorBB, false)
+			    }).catch((err) => {
+	        console.log('Error: ', err.toString())
+	    })
+	    
+		gpiop.setup(motorAA, gpio.DIR_OUT)
+			    .then(() => {
+			        return gpiop.write(motorAA, true)
+			    }).catch((err) => {
+		     console.log('Error: ', err.toString())
+		 })
+		gpiop.setup(motorAB, gpio.DIR_OUT)
+			    .then(() => {
+			        return gpiop.write(motorAB, false)
+			    }).catch((err) => {
+		     console.log('Error: ', err.toString())
+		 })  			
+  	}
+  	
+  	if(direction == 'DOWN') { // move backward
+  	
+
+		  	
+		gpiop.setup(motorAA, gpio.DIR_OUT)
+			    .then(() => {
+			        return gpiop.write(motorAA, false)
+			    }).catch((err) => {
+		     console.log('Error: ', err.toString())
+		 })
+		gpiop.setup(motorAB, gpio.DIR_OUT)
+			    .then(() => {
+			        return gpiop.write(motorAB, true)
+			    }).catch((err) => {
+		     console.log('Error: ', err.toString())
+		 })  		 
+		 
+		 gpiop.setup(motorBA, gpio.DIR_OUT)
+			    .then(() => {
+			        return gpiop.write(motorBA, false)
+			    }).catch((err) => {
+	        console.log('Error: ', err.toString())
+	    })
+			gpiop.setup(motorBB, gpio.DIR_OUT)
+			    .then(() => {
+			        return gpiop.write(motorBB, true)
+			    }).catch((err) => {
+	        console.log('Error: ', err.toString())
+	    })
+  	}
+	
+
+}

@@ -1,0 +1,17 @@
+{
+  "name": "FireEngine",
+  "version": "0.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.16.4",
+    "mmm-usonic": "^2.5.3",
+    "socket.io": "^2.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Muneersha BL",
+  "license": "ISC"
+}

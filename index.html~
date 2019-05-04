@@ -1,0 +1,15 @@
+<html>
+	<head>
+		<script src="/socket.io/socket.io.js"></script>
+		<script>
+  			var socket = io();
+  			var data = {
+  				'message': "hai this is from web"  			
+  			};
+  			socket.emit('message', "from web");
+		</script>
+	</head>
+	<body>
+		<h1>Okkk</h1>
+	</body>
+</html>
